@@ -1,85 +1,83 @@
 import os
+import sys
 import time
 import subprocess
 
-
-GITHUB_USER = "Thooooooo"
-REPO_NAME = "luckfox-store"
-RAW_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/main/library.txt"
+# --- CẤU HÌNH ---
+USER = "Thooooooo"
+REPO = "luckfox-store"
+RAW_BASE = f"https://raw.githubusercontent/{USER}/{REPO}/main"
 
 def clear():
     os.system('clear')
 
-def get_remote_list():
-    try:
-        # Tải danh sách thư viện từ GitHub 
-        content = subprocess.check_output(['curl', '-s', RAW_URL]).decode('utf-8')
-        lines = [line.strip() for line in content.split('\n') if line.strip()]
-        return lines
-    except:
-        return []
+def get_py_ver():
+    # Lấy phiên bản Python hiện tại (vd: 3.11)
+    return f"{sys.version_info.major}.{sys.version_info.minor}"
 
 def main():
+    py_ver = get_py_ver()
     while True:
         clear()
-        print("\033[1;36m")
-        print("    _______________________________________")
-        print("   |                                       |")
-        print("   |         LUCKFOX STORE V3.2            |")
-        print("   |      --- AUTO-SYNC GITHUB ---         |")
-        print("   |_______________________________________|")
-        print("\033[0m")
-        print(" [1] 📥 KHO THƯ VIỆN (Tự động cập nhật)")
-        print(" [2] 🌡️ Kiểm tra nhiệt độ Chip")
-        print(" [3] ❌ Thoát")
+        print(f"\033[1;36m")
+        print("    ╔═══════════════════════════════════════╗")
+        print("    ║           LUCKFOX STORE V4.0          ║")
+        print(f"    ║       System Python: {py_ver}             ║")
+        print("    ╚═══════════════════════════════════════╝\033[0m")
+        
+        print(" [1] 📥 KHO THƯ VIỆN (Auto-Detect Python)")
+        print(" [2] 🧹 Dọn dẹp hệ thống (Clean Junk)")
+        print(" [3] 🌡️ Kiểm tra phần cứng")
+        print(" [4] ❌ Thoát")
         print(" ---------------------------------------")
         
-        choice = input("\033[1;33mThọ chọn số (1-3): \033[0m")
+        choice = input("\033[1;33mThọ chọn số (1-4): \033[0m")
         
         if choice == '1':
             clear()
-            print("\033[1;34m[GitHub]\033[0m Đang đồng bộ từ kho của Thoisme...")
-            libs = get_remote_list()
-            
-            if not libs:
-                print("\n❌ Lỗi: Không tìm thấy library.txt hoặc file trống!")
+            print(f"🔍 Đang quét kho cho Python {py_ver}...")
+            # Lấy danh sách từ library.txt
+            try:
+                cmd = f"curl -s {RAW_BASE}/library.txt"
+                libs = subprocess.check_output(cmd, shell=True).decode().splitlines()
+                
+                for i, lib in enumerate(libs, 1):
+                    print(f" [{i}] {lib}")
+                print(" [0] Quay lại")
+                
+                sub = input("\n\033[1;33mChọn số để nạp: \033[0m")
+                if sub == '0' or not sub.isdigit(): continue
+                
+                target = libs[int(sub)-1].split()[1] # Lấy tên thư viện (ujson, opencv...)
+                
+                # CƠ CHẾ TỰ ĐỘNG CẬP NHẬT TÊN FILE THEO PYTHON VERSION
+                filename = f"{target}.py{py_ver.replace('.','')}.so" 
+                # Ví dụ: ujson.py311.so
+                
+                print(f"🚀 Đang tải bản chuẩn cho Luckfox: {filename}...")
+                url = f"{RAW_BASE}/bin/{filename}"
+                
+                res = os.system(f"wget -q {url} -O {target}.so")
+                
+                if res == 0:
+                    print(f"✅ Đã nạp thành công {target}!")
+                else:
+                    print(f"❌ Lỗi: Bản {target} cho Python {py_ver} chưa có trên kho của Thọ.")
+                
+                input("\nNhấn Enter để tiếp tục...")
+            except:
+                print("Lỗi kết nối GitHub!")
                 time.sleep(2)
-                continue
-
-            print("---------------------------------------")
-            # Tự động đánh số theo số dòng trong library.txt
-            for i, name in enumerate(libs, 1):
-                print(f" [{i}] {name}")
-            print(" [0] Quay lại")
-            print("---------------------------------------")
-            
-            sub = input("\033[1;33m chọn gói cần nạp (số): \033[0m")
-            if sub == '0' or not sub.isdigit(): continue
-            
-            idx = int(sub) - 1
-            if 0 <= idx < len(libs):
-                lib_name = libs[idx]
-                print(f"\n🚀 Đang kích hoạt tiến trình chuyển đổi & nạp: {lib_name}")
-                # Giả lập cài đặt (Thọ có thể thêm lệnh os.system() vào đây)
-                time.sleep(2)
-                print(f"✅ Đã nạp {lib_name} vào Luckfox thành công!")
-                input("\nNhấn Enter để quay lại...")
-            else:
-                print("Số này không có trong danh mục!")
-                time.sleep(1)
 
         elif choice == '2':
-            # Lấy nhiệt độ thật (nếu chạy trên Pi)
-            temp = os.popen("vcgencmd measure_temp").read().replace("temp=","").strip() or "45.0'C"
-            print(f"\033[1;32mNhiệt độ hiện tại: {temp}\033[0m")
-            input("Nhấn Enter để tiếp tục...")
-        elif choice == '3':
-            print("Tạm biệt ! Hẹn gặp lại trên Luckfox.")
-            break
-        else:
-            print("Chỉ chọn 1, 2 hoặc 3 thôi Thọ ơi!")
+            print("🧹 Đang dọn dẹp file tạm và cache...")
+            os.system("rm -rf *.o *.tmp __pycache__")
             time.sleep(1)
+            print("✅ Hệ thống sạch sẽ!")
+            time.sleep(1)
+
+        elif choice == '4':
+            break
 
 if __name__ == "__main__":
     main()
-
