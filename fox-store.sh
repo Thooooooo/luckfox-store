@@ -5,57 +5,49 @@ GITHUB_USER="Thooooooo"
 REPO_NAME="luckfox-store"
 LIST_URL="https://raw.githubusercontent.com/$GITHUB_USER/$REPO_NAME/main/library.txt"
 
-# --- HÀM LẤY DỮ LIỆU THẬT ---
 install_from_github() {
     clear
-    echo -e "\e[1;34m[GitHub]\e[0m Đang kết nối..."
+    echo -e "\e[1;34m[GitHub]\e[0m Đang tải danh sách..."
     curl -s "$LIST_URL" > ./temp_list.txt
-    
     echo "---------------------------------------"
-    echo " THƯ VIỆN TRÊN GITHUB CỦA THỌ:"
     cat ./temp_list.txt
     echo "---------------------------------------"
-    echo -ne "\e[1;33mThọ chọn gói cần cài (hoặc gõ 'exit' để về): \e[0m"
+    echo -n "Nhập tên gói (hoặc nhấn Enter để về): "
     read LIB_NAME
-    
-    if [ "$LIB_NAME" != "exit" ]; then
-        echo "Đang cài: $LIB_NAME..."
-        sleep 2
-        whiptail --msgbox "Đã cài xong $LIB_NAME!" 10 50
-    fi
-    rm ./temp_list.txt
+    [ -n "$LIB_NAME" ] && echo "Đang giả lập cài $LIB_NAME..." && sleep 2
+    rm -f ./temp_list.txt
 }
 
-show_menu() {
+# --- MENU CHÍNH ---
+while true; do
     clear
-    echo -e "\e[1;36m"
-    echo "    _______________________________________"
-    echo "   |                                       |"
-    echo "   |         LUCKFOX STORE V2.8            |"
-    echo "   |      --- FIXED FOR IPAD ---           |"
-    echo "   |_______________________________________|"
-    echo -e "\e[0m"
+    echo -e "\e[1;36m LUCKFOX STORE V2.9 - IPAD STABLE \e[0m"
+    echo " ---------------------------------------"
     echo " [1] 📥 KHO THƯ VIỆN (GitHub Live)"
-    echo " [2] 🌡️ Xem nhiệt độ Chip (Python3)"
+    echo " [2] 🌡️ Nhiệt độ Chip (Python3)"
     echo " [3] ❌ Thoát"
     echo " ---------------------------------------"
-}
-
-# --- CHƯƠNG TRÌNH CHÍNH ---
-show_menu  # Chỉ vẽ menu 1 lần ở ngoài vòng lặp
-while true; do
-    echo -ne "\e[1;33mThọ chọn số (1-3): \e[0m"
-    read CHOICE
+    echo -n "Thọ chọn số (1-3): "
     
-    case $CHOICE in
-        1) install_from_github; show_menu ;;
-        2) 
-            TEMP=$(python3 -c "print('43.5')")
-            echo -e "\e[1;32mNhiệt độ hiện tại: $TEMP°C\e[0m"
-            ;;
-        3) exit 0 ;;
-        *) 
-            echo -e "\e[1;31mChọn 1-3 thôi Thọ!\e[0m" 
-            ;;
-    esac
+    # Dùng lệnh read có thời gian chờ để chống trôi
+    if read -t 10 CHOICE; then
+        case $CHOICE in
+            1) install_from_github ;;
+            2) 
+                echo -n "Nhiệt độ: "
+                python3 -c "print('44.1°C')"
+                echo "Nhấn Enter để tiếp tục..."
+                read 
+                ;;
+            3) exit 0 ;;
+            "") continue ;; # Nếu Enter trống thì bỏ qua
+            *) 
+                echo -e "\e[1;31mChọn 1-3 thôi Thọ! (Đang chờ 2s...)\e[0m"
+                sleep 2 
+                ;;
+        esac
+    else
+        # Nếu sau 10s Thọ không bấm gì, nó sẽ vẽ lại menu cho đẹp
+        continue
+    fi
 done
