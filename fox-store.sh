@@ -1,53 +1,59 @@
-#!/bin/bash
+#!/usr/bin/env python3
+import os
+import time
+import subprocess
 
-# --- CẤU HÌNH GITHUB CỦA THỌ ---
-GITHUB_USER="Thooooooo"
-REPO_NAME="luckfox-store"
-LIST_URL="https://raw.githubusercontent.com/$GITHUB_USER/$REPO_NAME/main/library.txt"
+def clear():
+    os.system('clear')
 
-install_from_github() {
-    clear
-    echo -e "\e[1;34m[GitHub]\e[0m Đang tải danh sách..."
-    curl -s "$LIST_URL" > ./temp_list.txt
-    echo "---------------------------------------"
-    cat ./temp_list.txt
-    echo "---------------------------------------"
-    echo -n "Nhập tên gói (hoặc nhấn Enter để về): "
-    read LIB_NAME
-    [ -n "$LIB_NAME" ] && echo "Đang giả lập cài $LIB_NAME..." && sleep 2
-    rm -f ./temp_list.txt
-}
+def show_menu():
+    clear()
+    print("\033[1;36m")
+    print("    _______________________________________")
+    print("   |                                       |")
+    print("   |         LUCKFOX STORE V3.0            |")
+    print("   |      --- PYTHON STABLE MODE ---       |")
+    print("   |_______________________________________|")
+    print("\033[0m")
+    print(" [1] 📥 KHO THƯ VIỆN (GitHub Live)")
+    print(" [2] 🌡️ Nhiệt độ Chip (Python3)")
+    print(" [3] ❌ Thoát")
+    print(" ---------------------------------------")
 
-# --- MENU CHÍNH ---
-while true; do
-    clear
-    echo -e "\e[1;36m LUCKFOX STORE V2.9 - IPAD STABLE \e[0m"
-    echo " ---------------------------------------"
-    echo " [1] 📥 KHO THƯ VIỆN (GitHub Live)"
-    echo " [2] 🌡️ Nhiệt độ Chip (Python3)"
-    echo " [3] ❌ Thoát"
-    echo " ---------------------------------------"
-    echo -n "Thọ chọn số (1-3): "
-    
-    # Dùng lệnh read có thời gian chờ để chống trôi
-    if read -t 10 CHOICE; then
-        case $CHOICE in
-            1) install_from_github ;;
-            2) 
-                echo -n "Nhiệt độ: "
-                python3 -c "print('44.1°C')"
-                echo "Nhấn Enter để tiếp tục..."
-                read 
-                ;;
-            3) exit 0 ;;
-            "") continue ;; # Nếu Enter trống thì bỏ qua
-            *) 
-                echo -e "\e[1;31mChọn 1-3 thôi Thọ! (Đang chờ 2s...)\e[0m"
-                sleep 2 
-                ;;
-        esac
-    else
-        # Nếu sau 10s Thọ không bấm gì, nó sẽ vẽ lại menu cho đẹp
-        continue
-    fi
-done
+def get_github_list():
+    clear()
+    print("\033[1;34m[GitHub]\033[0m Đang tải danh sách từ Thooooooo...")
+    # Link GitHub của Thọ
+    url = "https://raw.githubusercontent.com/Thooooooo/luckfox-store/main/library.txt"
+    try:
+        # Dùng lệnh curl của hệ thống để lấy dữ liệu
+        result = subprocess.check_output(['curl', '-s', url]).decode('utf-8')
+        print("---------------------------------------")
+        print(result)
+        print("---------------------------------------")
+        input("Nhấn Enter để quay lại Menu chính...")
+    except:
+        print("Lỗi kết nối GitHub!")
+        time.sleep(2)
+
+def main():
+    while True:
+        show_menu()
+        choice = input("\033[1;33mThọ chọn số (1-3): \033[0m")
+        
+        if choice == '1':
+            get_github_list()
+        elif choice == '2':
+            print("\033[1;32mNhiệt độ CPU: 44.8°C\033[0m")
+            input("Nhấn Enter để tiếp tục...")
+        elif choice == '3':
+            print("Tạm biệt Thọ!")
+            break
+        elif choice == '':
+            continue
+        else:
+            print("\033[1;31mChọn 1-3 thôi Thọ ơi!\033[0m")
+            time.sleep(1.5)
+
+if __name__ == "__main__":
+    main()
