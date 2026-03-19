@@ -2,3 +2,4 @@
 [2] MediaPipe_Face_Detection
 [3] GPIO_LED_Blink_Script
 [4] Luckfox_Camera_Driver
+5. Ujson_ARMhf_32bit_Stable
