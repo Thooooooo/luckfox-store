@@ -2,7 +2,7 @@ import os
 import time
 import subprocess
 
-# --- CẤU HÌNH GITHUB CỦA THỌ (7 CHỮ O) ---
+
 GITHUB_USER = "Thooooooo"
 REPO_NAME = "luckfox-store"
 RAW_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/main/library.txt"
@@ -12,7 +12,7 @@ def clear():
 
 def get_remote_list():
     try:
-        # Tải danh sách thư viện từ GitHub của Thọ
+        # Tải danh sách thư viện từ GitHub 
         content = subprocess.check_output(['curl', '-s', RAW_URL]).decode('utf-8')
         lines = [line.strip() for line in content.split('\n') if line.strip()]
         return lines
@@ -38,7 +38,7 @@ def main():
         
         if choice == '1':
             clear()
-            print("\033[1;34m[GitHub]\033[0m Đang đồng bộ từ kho của Thooooooo...")
+            print("\033[1;34m[GitHub]\033[0m Đang đồng bộ từ kho của Thoisme...")
             libs = get_remote_list()
             
             if not libs:
@@ -53,7 +53,7 @@ def main():
             print(" [0] Quay lại")
             print("---------------------------------------")
             
-            sub = input("\033[1;33mThọ chọn gói cần nạp (số): \033[0m")
+            sub = input("\033[1;33m chọn gói cần nạp (số): \033[0m")
             if sub == '0' or not sub.isdigit(): continue
             
             idx = int(sub) - 1
@@ -74,7 +74,7 @@ def main():
             print(f"\033[1;32mNhiệt độ hiện tại: {temp}\033[0m")
             input("Nhấn Enter để tiếp tục...")
         elif choice == '3':
-            print("Tạm biệt Thọ! Hẹn gặp lại trên Luckfox.")
+            print("Tạm biệt ! Hẹn gặp lại trên Luckfox.")
             break
         else:
             print("Chỉ chọn 1, 2 hoặc 3 thôi Thọ ơi!")
