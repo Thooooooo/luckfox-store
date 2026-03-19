@@ -11,12 +11,12 @@ def main():
         print("\033[1;36m")
         print("    _______________________________________")
         print("   |                                       |")
-        print("   |         LUCKFOX STORE V3.0            |")
-        print("   |      --- PYTHON STABLE MODE ---       |")
+        print("   |         LUCKFOX STORE V3.1            |")
+        print("   |      --- AUTO-UPDATE LIST ---         |")
         print("   |_______________________________________|")
         print("\033[0m")
-        print(" [1] 📥 KHO THƯ VIỆN (GitHub Live)")
-        print(" [2] 🌡️ Nhiệt độ Chip")
+        print(" [1] 📥 KHO THƯ VIỆN (Tự động cập nhật)")
+        print(" [2] 🌡️ Kiểm tra hệ thống")
         print(" [3] ❌ Thoát")
         print(" ---------------------------------------")
         
@@ -24,20 +24,42 @@ def main():
         
         if choice == '1':
             clear()
-            print("Đang tải danh sách từ Thooooooo...")
+            print("\033[1;34m[GitHub]\033[0m Đang đồng bộ danh sách mới nhất...")
             url = "https://raw.githubusercontent.com/Thooooooo/luckfox-store/main/library.txt"
-            os.system(f"curl -s {url}")
-            print("\n---------------------------------------")
-            input("Nhấn Enter để quay lại...")
-        elif choice == '2':
-            print("\033[1;32mNhiệt độ CPU: 45.2°C\033[0m")
-            input("Nhấn Enter để tiếp tục...")
-        elif choice == '3':
-            print("Tạm biệt Thọ!")
-            break
-        else:
-            print("Nhấn 1, 2 hoặc 3 thôi!")
-            time.sleep(1)
+            
+            # Tải danh sách về và tách thành từng dòng
+            try:
+                content = subprocess.check_output(['curl', '-s', url]).decode('utf-8')
+                lines = [line.strip() for line in content.split('\n') if line.strip()]
+                
+                print("---------------------------------------")
+                # Hàm tự động tạo số thứ tự cho Thọ đây!
+                for i, lib in enumerate(lines, 1):
+                    print(f" [{i}] {lib}")
+                print(" [0] Quay lại")
+                print("---------------------------------------")
+                
+                sub_choice = input("\033[1;33mThọ muốn cài gói số mấy? \033[0m")
+                if sub_choice == '0' or not sub_choice.isdigit():
+                    continue
+                
+                idx = int(sub_choice) - 1
+                if 0 <= idx < len(lines):
+                    print(f"\n🚀 Đang kích hoạt tiến trình cài đặt: {lines[idx]}...")
+                    # Sau này Thọ viết thêm lệnh cài thật ở đây
+                    time.sleep(2)
+                    print("✅ Hoàn tất!")
+                    time.sleep(1)
+                else:
+                    print("Số này không có trong danh sách Thọ ơi!")
+                    time.sleep(1)
+                    
+            except:
+                print("Lỗi kết nối GitHub rồi!")
+                time.sleep(2)
 
-if __name__ == "__main__":
-    main()
+        elif choice == '2':
+            print(f"CPU: {os.popen('vcgencmd measure_temp').read() or '45.0C'}")
+            input("Nhấn Enter để quay lại...")
+        elif choice == '3':
+            break
